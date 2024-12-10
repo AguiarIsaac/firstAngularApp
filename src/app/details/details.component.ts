@@ -2,8 +2,9 @@ import {Component, inject} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ActivatedRoute} from '@angular/router';
 import {HousingService} from '../housing.service';
+import {HousingLocation} from '../interfaces/housinglocation';
 import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
-import { HousingLocation } from '../interfaces/housinglocation';
+
 @Component({
   selector: 'app-details',
   imports: [CommonModule, ReactiveFormsModule],
@@ -43,10 +44,12 @@ import { HousingLocation } from '../interfaces/housinglocation';
   `,
   styleUrls: ['./details.component.css'],
 })
+
 export class DetailsComponent {
   route: ActivatedRoute = inject(ActivatedRoute);
   housingService = inject(HousingService);
   housingLocation: HousingLocation | undefined;
+
   applyForm = new FormGroup({
     firstName: new FormControl(''),
     lastName: new FormControl(''),
@@ -55,7 +58,9 @@ export class DetailsComponent {
 
   constructor() {
     const housingLocationId = parseInt(this.route.snapshot.params['id'], 10);
-    this.housingLocation = this.housingService.getHousingLocationById(housingLocationId);
+    this.housingService.getHousingLocationById(housingLocationId).then((housingLocation) => {
+      this.housingLocation = housingLocation;
+    });
   }
   
   submitApplication() {
